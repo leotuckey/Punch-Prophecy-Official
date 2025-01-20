@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en" class="no-js">
+
+<head>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"> </script>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="https://html5-templates.com/" />
+  <title>Punch Prophecy</title>
+  <meta name="description" content="A simple tool allowing the user to predict UFC fights using deep learning.">
+
+  <style>
+    /* Center the loader */
+    #loader {
+      position: absolute;
+      left: 51.7%;
+      top: 50%;
+      z-index: 1;
+      width: 60px;
+      height: 60px;
+      margin: -76px 0 0 -76px;
+      border: 16px solid #770f0f;
+      border-radius: 50%;
+      border-top: 16px solid #160f84;
+      -webkit-animation: spin 2s linear infinite;
+      animation: spin 2s linear infinite;
+    }
+
+    @-webkit-keyframes spin {
+      0% {
+        -webkit-transform: rotate(0deg);
+      }
+
+      100% {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Add animation to "page content" */
+    .animate-bottom {
+      position: relative;
+      -webkit-animation-name: animatebottom;
+      -webkit-animation-duration: 1s;
+      animation-name: animatebottom;
+      animation-duration: 1s
+    }
+
+    @-webkit-keyframes animatebottom {
+      from {
+        bottom: -100px;
+        opacity: 0
+      }
+
+      to {
+        bottom: 0px;
+        opacity: 1
+      }
+    }
+
+    @keyframes animatebottom {
+      from {
+        bottom: -100px;
+        opacity: 0
+      }
+
+      to {
+        bottom: 0;
+        opacity: 1
+      }
+    }
+
+    #myDiv {
+      display: none;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body onload="myLoader()">
+  <div class="bg"></div>
+  <div id="loader"></div>
+
+  <header>
+    <center>
+      <div style="font-family: Copperplate; font-size:50px" id="logo">
+        <!--
+    <img src="neural.png" />
+   -->
+        Punch Prophecy
+      <br>
+      <span style="font-size: 20px;">
+        Deep Learning UFC Fight Predictor Developed by Leo Tuckey
+      </span>
+        <!--
+      <img style = "transform: rotate(180deg);" src="neural2.png"/>
+      -->
+      </div>
+    </center>
+  </header>
+
+  <section id="fighterPictures">
+    <datalist id="fighters"> </datalist>
+    <main role="main">
+      <center>
+        <h1 id="rc" style="display:none;font-size: 40px;font-variant: small-caps; color: #212121;">
+          In the Red Corner
+        </h1>
+
+        <article>
+          <!--
+          used to use colorize class but switched to CNN stylization
+          <img class="colorize" style='border: 10px solid #555' id=fighter2pic src="" alt="" height="350" width="350">
+         -->
+          <img style='display:none; border: 10px solid #212121' id=fighter1pic src="" alt="" height="350" width="350">
+        </article>
+
+      </center>
+    </main>
+
+    <aside>
+      <center>
+        <h1 id="bc" style="display:none;font-size: 40px; font-variant: small-caps;  color: #212121;">
+          In the Blue Corner
+        </h1>
+        <article>
+          <!--
+          used to use colorize class but switched to CNN stylization
+          <img class="colorize" style='border: 10px solid #555' id=fighter2pic src="" alt="" height="350" width="350">
+         -->
+          <img style='display:none; border: 10px solid #212121' id=fighter2pic src="" alt="" height="350" width="350">
+        </article>
+      </center>
+    </aside>
+  </section>
+
+  <section id="selectFighters">
+    <datalist id="months">
+      <option value="January">
+      <option value="February">
+      <option value="March">
+      <option value="April">
+      <option value="May">
+      <option value="June">
+      <option value="July">
+      <option value="August">
+      <option value="September">
+      <option value="October">
+      <option value="November">
+      <option value="December">
+    </datalist>
+    <datalist id="years">
+      <option value="2022">
+    </datalist>
+    <datalist id="fighters"> </datalist>
+    <main style="display:none" id="mainpart" role="main">
+      <center>
+        <article>
+          <p>
+            <input onfocus=this.value='' id=select1 type="text" list="fighters" value=""><br><br>
+            <input onfocus=this.value='' type="text2" id=f1selectmonth list="months" value="March"> <input
+              onfocus=this.value='' type="text3" id=f1selectyear list="years" value=2022><br>
+          </p>
+          <button style="font-variant: small-caps; margin-top:.3cm" class="button button1"
+            onclick="selectFighterAndDate('select1','name1','f1selectmonth','month1','f1selectyear','year1')"> Confirm
+            Red Corner</button>
+        </article>
+      </center>
+    </main>
+
+    <aside style="display:none" id="asidepart">
+      <center>
+        <article>
+          <p>
+            <input onfocus=this.value='' type="text" id=select2 list="fighters" value=""><br><br>
+            <input onfocus=this.value='' type="text2" id=f2selectmonth list="months" value="March"> <input
+              onfocus=this.value='' type="text3" id=f2selectyear list="years" value=2022><br>
+          </p>
+          <button style="font-variant: small-caps; margin-top:.3cm" class="button button2"
+            onclick="selectFighterAndDate('select2','name2','f2selectmonth','month2','f2selectyear','year2')"> Confirm
+            Blue Corner</button>
+        </article>
+      </center>
+    </aside>
+  </section>
+
+  <section id="taleofthetape">
+
+    <div style="display:none" id="taletape" class="headers">
+      <h1>
+        Tale of the Tape
+      </h1>
+    </div>
+
+    <main id="month1selecter" style="display:none" role="main">
+      <center>
+        <p>
+          <span class="month1"></span> <span class="year1"></span>
+        </p>
+      </center>
+    </main>
+
+    <aside style="display:none" id="month2selecter">
+      <center>
+        <p>
+          <span class="month2"></span> <span class="year2"></span>
+        </p>
+      </center>
+    </aside>
+
+    <main style="display:none" id="table1display" role="main">
+      <center>
+        <table id="table1">
+          <tr style="color: #fff; font-size:30px;font-variant: small-caps;">
+            <td colspan="4"></td>
+          </tr>
+          <tr id="first row">
+            <td>Height</td>
+            <td>Reach</td>
+            <td>Age</td>
+            <td>Stance</td>
+          </tr>
+          <tr>
+            <td>??</td>
+            <td>??</td>
+            <td>??</td>
+            <td>??</td>
+          </tr>
+        </table>
+      </center>
+    </main>
+
+    <aside style="display:none" id="table2display">
+      <center>
+        <table id="table2">
+          <tr style="color: #fff; font-size:30px;font-variant: small-caps;">
+            <td colspan="4"></td>
+          </tr>
+          <tr id="first row">
+            <td>Height</td>
+            <td>Reach</td>
+            <td>Age</td>
+            <td>Stance</td>
+          </tr>
+          <tr>
+            <td>??</td>
+            <td>??</td>
+            <td>??</td>
+            <td>??</td>
+          </tr>
+        </table>
+      </center>
+    </aside>
+  </section>
+
+
+  <section id="last5fights" style="display:none">
+    <div class="headers">
+      <h1>
+        Last 5 Fights
+      </h1>
+    </div>
+    <main style="display:none" id="fighterl5y" role="main">
+      <center>
+        <table id="l5ytable1" style="width:80%;">
+          <thead>
+            <tr style="color: #fff; font-size:30px;">
+              <td colspan="4"></td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Opponent</th>
+              <th>Result</th>
+              <th>Method</th>
+              <th>Date</th>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </center>
+    </main>
+
+    <aside style="display:none" id="opponentl5y">
+      <center>
+        <table id="l5ytable2" style="width:80%;">
+          <thead>
+            <tr style="color: #fff; font-size:30px;">
+              <td colspan="4"></td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Opponent</th>
+              <th>Result</th>
+              <th>Method</th>
+              <th>Date</th>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </center>
+    </aside>
+  </section>
+
+
+  <section id="predict" style="display:none">
+    <div class="headers">
+      <h1>
+        Predict Outcome
+      </h1>
+    </div>
+    <center>
+      This should take about 5 seconds of computing.
+    </center>
+    <div>
+      <center>
+        <button class="button button3"
+          onclick="predict('select1','select2','f1selectmonth','f1selectyear','f2selectmonth','f2selectyear',)">
+          Calculate </button>
+      </center>
+    </div>
+    <center>
+      <span style="font-size:30px;" class="fightoutcome"></span>
+    </center>
+
+    <center>
+      <table id="tableoutcome" style="margin-top:.5cm;">
+        <tr style="color: #ffffff; font-size:25px;font-variant: small-caps;">
+          <td colspan="3">Predicted Odds (no vig)</td>
+        </tr>
+        <tr id="odds">
+          <td style="color: #fff;font-size:15px;">Fair Odds</td>
+          <td style="color: #fff;font-size:15px;"></td>
+          <td style="color: #fff;font-size:15px;"></td>
+        </tr>
+        <!-- 
+
+          <tr style="color: #fff; font-size:25px;font-variant: small-caps;">
+            <td colspan="3">Bookie Odds</td>
+          </tr>
+          <tr>
+            <td style="color: #fff;font-size:15px;">Draftkings</td>
+            <td style="color: #fff;font-size:15px;"></td>
+            <td style="color: #fff;font-size:15px;"></td>
+          </tr>
+          <tr>
+            <td style="color: #fff;font-size:15px;">BetMGM</td>
+            <td style="color: #fff;font-size:15px;"></td>
+            <td style="color: #fff;font-size:15px;"></td>
+          </tr>
+          <tr>
+            <td style="color: #fff;font-size:15px;">Caesars</td>
+            <td style="color: #fff;font-size:15px;"></td>
+            <td style="color: #fff;font-size:15px;"></td>
+          </tr>
+          <tr>
+            <td style="color: #fff;font-size:15px;">BetRivers</td>
+            <td style="color: #fff;font-size:15px;"></td>
+            <td style="color: #fff;font-size:15px;"></td>
+          </tr>
+          <tr>
+            <td style="color: #fff;font-size:15px;">FanDuel</td>
+            <td style="color: #fff;font-size:15px;"></td>
+            <td style="color: #fff;font-size:15px;"></td>
+          </tr>
+          <tr>
+            <td style="color: #fff;font-size:15px;">PointsBet</td>
+            <td style="color: #fff;font-size:15px;"></td>
+            <td style="color: #fff;font-size:15px;"></td>
+          </tr>
+          <tr>
+            <td style="color: #fff;font-size:15px;">Unibet</td>
+            <td style="color: #fff;font-size:15px;"></td>
+            <td style="color: #fff;font-size:15px;"></td>
+          </tr>
+          <tr>
+            <td style="color: #fff;font-size:15px;">Bet365</td>
+            <td style="color: #fff;font-size:15px;"></td>
+            <td style="color: #fff;font-size:15px;"></td>
+          </tr>
+          <tr>
+            <td style="color: #fff;font-size:15px;">BetWay</td>
+            <td style="color: #fff;font-size:15px;"></td>
+            <td style="color: #fff;font-size:15px;"></td>
+          </tr>
+          <tr>
+            <td style="color: #fff;font-size:15px;">SD</td>
+            <td style="color: #fff;font-size:15px;"></td>
+            <td style="color: #fff;font-size:15px;"></td>
+          </tr>
+          <tr>
+            <td style="color: #fff;font-size:15px;">Ref</td>
+            <td style="color: #fff;font-size:15px;"></td>
+            <td style="color: #fff;font-size:15px;"></td>
+          </tr>
+        -->
+      </table>
+    </center>
+  </section>
+
+  <section id="futurefights" style="display:none">
+    <div class="headers">
+      <h1>
+        Upcoming Fights
+      </h1>
+    </div>
+    <center>
+      Here we show the model's predictions for upcoming fights which are on the vegas books (only those for which both
+      fighters have fought previously in the UFC).
+      Results may differ slightly from live predictions in the predictor above due to the fact that the predictions in
+      the table are made in our python model
+      and the predictions made live on the website are made with our javascript model which may slightly differ from
+      time to time. The predicted winner is shown in <span style="color:gold">gold</span>.
+      Clicking on any of the names will take you to their wikipedia pages.
+    </center>
+    <center>
+      <table id="upcoming" style="margin-top:.5cm; display: none">
+        <thead>
+          <tr id = "card-title-style" style="color: #fff; font-size:15px;font-variant: small-caps;">
+            <th id="card title and date" style="white-space: pre" colspan="6">Upcoming Fights</th>
+          </tr>
+          <tr>
+            <th style="color: #ffffff;background-color: #323232; font-size:15px;">Fighter</th>
+            <th style="color: #ffffff;background-color: #323232;font-size:15px;">Opponent</th>
+            <th style="color: #ffffff;background-color: #323232;font-size:15px;">Predicted<br>Fighter<br>Odds</th>
+            <th style="color: #ffffff;background-color: #323232;font-size:15px;">Predicted<br>Opponent<br>Odds</th>
+            <th style="color: #ffffff;background-color: #323232;font-size:15px;">Average<br>Bookie<br>Odds</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </center>
+  </section>
+
+
+
+  <section id="pastfights" style="display:none">
+    <div class="headers">
+      <h1>
+        Past Fights (Recent)
+      </h1>
+    </div>
+
+  
+
+    <center>
+      <table id="tablehistory" style="margin-top:.5cm;display:none">
+        <thead>
+          <tr style="color: #fff; font-size:15px;font-variant: small-caps;">
+            <th colspan="6">Fight Prediction History</th>
+          </tr>
+          <tr id="history">
+            <th style="color: #ffffff;background-color: #323232; font-size:15px;">Fighter</th>
+            <th style="color: #ffffff;background-color: #323232;font-size:15px;">Opponent</th>
+            <th style="color: #ffffff;background-color: #323232;font-size:15px;">Predicted<br>Fighter<br>Odds</th>
+            <th style="color: #ffffff;background-color: #323232;font-size:15px;">Predicted<br>Opponent<br>Odds</th>
+            <th style="color: #ffffff;background-color: #323232;font-size:15px;">Correctly<br>Predicted?</th>
+            <th style="color: #ffffff;background-color: #323232;font-size:15px;">Average <br>Bookie<br>Odds</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </center>
+
+    
+      <div>
+        
+          <center>
+            <p style="font-size:16pt" id="myaccuracy"> Accuracy</p>
+          </center>
+        </div>
+      
+  </section>
+
+  <section style="display:none;" id="headers">
+    <div class="headers">
+      
+    </div>
+  </section>
+
+  <footer style="display:none" id="foot">
+    
+  </footer>
+
+  <script src="script.js"></script>
+
+  <script>
+    var myVar;
+
+    function myLoader() {
+      myVar = setTimeout(showPage, 2001);
+    }
+
+    function showPage() {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("headers").style.display = "block";
+      document.getElementById("tablehistory").style.display = "inline-block";
+      document.getElementById("upcoming").style.display = "inline-block";
+      document.getElementById("predict").style.display = "block";
+      document.getElementById("bc").style.display = "inline-block";
+      document.getElementById("rc").style.display = "inline-block";
+      document.getElementById("mainpart").style.display = "inline-block";
+      document.getElementById("asidepart").style.display = "inline-block";
+      document.getElementById("month1selecter").style.display = "block";
+      document.getElementById("month2selecter").style.display = "block";
+      document.getElementById("table1display").style.display = "inline-block";
+      document.getElementById("table2display").style.display = "inline-block";
+      document.getElementById("fighterl5y").style.display = "inline-block";
+      document.getElementById("opponentl5y").style.display = "inline-block";
+      document.getElementById("fighter1pic").style.display = "inline";
+      document.getElementById("fighter2pic").style.display = "inline";
+      document.getElementById("taletape").style.display = "block";
+      document.getElementById("last5fights").style.display = "block";
+      document.getElementById("futurefights").style.display = "block";
+      document.getElementById("pastfights").style.display = "block";
+      document.getElementById("foot").style.display = "block";
+    }
+  </script>
+</body>
+<link rel="stylesheet" href="style.css">
+<link href="minimal-table.css" rel="stylesheet" type="text/css">
+
+</html>
